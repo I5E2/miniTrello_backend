@@ -47,38 +47,24 @@ public class SecurityConfig{
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
         return configuration.getAuthenticationManager();
     }
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http
-                .csrf().disable()
-                .formLogin().disable()
-                .cors()
-                //.and()
-                //.authorizeRequests()
-                //.antMatchers("/", "/auth/**", "/posts/read/**", "/posts/search/**").permitAll()
-                //anyRequest().authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .oauth2Login()
-                .authorizationEndpoint()
-                .authorizationRequestResolver(
-                        new CustomAuthorizationRequestResolver(
-                                this.clientRegistrationRepository))
-                .and()
-                .userInfoEndpoint()
-                .userService(oAuth2UserService)
-                .and()
-                .successHandler(authSuccessHandler)
-                .failureHandler(authenticationFailureHandler())
-                .and()
-                .logout()
-                .logoutSuccessUrl("/")
-                //.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .invalidateHttpSession(true).deleteCookies("JESSIONID");
-        return http.build();
-    }
+
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable().formLogin().disable().cors()
+				// .and()
+				// .authorizeRequests()
+				// .antMatchers("/", "/auth/**", "/posts/read/**",
+				// "/posts/search/**").permitAll()
+				// anyRequest().authenticated()
+				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().oauth2Login()
+				.authorizationEndpoint()
+				.authorizationRequestResolver(new CustomAuthorizationRequestResolver(this.clientRegistrationRepository))
+				.and().userInfoEndpoint().userService(oAuth2UserService).and().successHandler(authSuccessHandler)
+				.failureHandler(authenticationFailureHandler()).and().logout().logoutSuccessUrl("/")
+				// .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.invalidateHttpSession(true).deleteCookies("JESSIONID");
+		return http.build();
+	}
 
 
 

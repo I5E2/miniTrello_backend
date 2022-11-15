@@ -27,8 +27,6 @@ import java.util.Collections;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-
-
     //소셜로그인을 통한 유저 저장
     @SneakyThrows
     @Override

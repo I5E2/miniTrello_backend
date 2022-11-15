@@ -29,7 +29,6 @@ dependencies {
 	implementation 'javax.servlet:jstl'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'mysql:mysql-connector-java'

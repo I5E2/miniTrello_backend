@@ -43,10 +43,6 @@ public class User {
     @Column(name="EML_ADDR")
     private String email;
 
-
-
-
-
     /*@Column
     private String picture;
      */

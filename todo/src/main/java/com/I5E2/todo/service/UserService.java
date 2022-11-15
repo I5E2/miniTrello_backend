@@ -12,6 +12,4 @@ public interface UserService extends OAuth2UserService<OAuth2UserRequest, OAuth2
     User changeUserInfo(User newUser);
     SessionUserDto login(String loginId, String password);
     void logout();
-
-
 }
