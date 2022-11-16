@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.I5E2.todo.dao.ScheduleMapper">
+
+	<resultMap id="scheduler"
+		type="com.I5E2.todo.domain.ScheduleVO">
+		<result column="SCHDL_ID" property="schdl_id" />
+		<result column="SCHDL_NM" property="schdl_nm" />
+		<result column="SCHDL_BGNG_DT" property="schdl_bgng_dt" />
+		<result column="SCHDL_END_DT" property="schdl_end_dt" />
+		<result column="PRGRSRT" property="prgrsrt" />
+		<result column="CMPTN_YN" property="cmptn_yn" />
+		<result column="CTGR_ID" property="ctgr_id" />
+		<result column="REG_DT" property="reg_dt" />
+		<result column="RGTR_ID" property="rgtr_id" />
+		<result column="SCHDL_ID" property="schdl_id" />
+		<result column="ATCH_DOC_ID" property="atch_doc_id" />
+		<result column="PSTN" property="pstn" />
+		<result column="INDCT_SN" property="indct_sn" />
+
+		<association property="ctgr"
+			javaType="com.I5E2.todo.domain.CatagoryVO">
+			<id property="seq" column="SEQ" />
+			<result property="color" column="COLOR" />
+			<result property="ctgr_id" column="CTGR_ID" />
+			<result property="ctgr_nm" column="CTGR_NM" />
+			<result property="rgtr_id" column="RGTR_ID" />
+		</association>
+
+	</resultMap>
+	<select id="findByDaySchedule" resultMap="scheduler">
+		SELECT *
+		FROM SCHDL INNER JOIN CTGR ON (SCHDL.CTGR_ID = CTGR.CTGR_ID)
+		<![CDATA[
+			WHERE SCHDL.RGTR_ID = #{rgtr_id} 
+			AND SCHDL_BGNG_DT <= STR_TO_DATE(#{date}, '%Y%m%d')
+			AND SCHDL_END_DT >= STR_TO_DATE(#{date}, '%Y%m%d')
+		]]>
+	</select>
+
+	<select id="findByDaysSchedule" resultMap="scheduler">
+		SELECT *
+		FROM SCHDL INNER JOIN CTGR ON (SCHDL.CTGR_ID = CTGR.CTGR_ID)
+		<![CDATA[
+			WHERE SCHDL.RGTR_ID = #{rgtr_id} 
+			AND(
+			(SCHDL_BGNG_DT >= STR_TO_DATE(#{startDate}, '%Y%m%d')
+			AND SCHDL_BGNG_DT <=STR_TO_DATE(#{endDate}, '%Y%m%d'))
+			OR 
+			(SCHDL_END_DT <= STR_TO_DATE(#{endDate}, '%Y%m%d')
+			AND SCHDL_END_DT >= STR_TO_DATE(#{startDate}, '%Y%m%d'))
+			)
+			
+		]]>
+	</select>
+
+	<insert id="insertSchedule"
+		parameterType="com.I5E2.todo.domain.ScheduleVO">
+		<selectKey keyProperty="schdl_id" resultType="string" order="BEFORE">
+			SELECT LPAD(MAX(CAST(SCHDL_ID AS UNSIGNED))+1, 8,'0') FROM SCHDL
+		</selectKey>
+		INSERT INTO SCHDL(SCHDL_ID, SCHDL_NM,SCHDL_BGNG_DT,SCHDL_END_DT,CTGR_ID,REG_DT,RGTR_ID)
+		VALUES(#{schdl_id},#{schdl_nm},#{schdl_bgng_dt},#{schdl_end_dt},#{ctgr_id},NOW(),#{rgtr_id})
+	</insert>
+
+	<update id="updateSchedule"
+		parameterType="com.I5E2.todo.domain.ScheduleVO">
+		UPDATE SCHDL
+		SET
+		SCHDL_NM = #{schdl_nm},
+		SCHDL_BGNG_DT=#{schdl_bgng_dt},
+		SCHDL_END_DT = #{schdl_end_dt},
+		CTGR_ID = #{ctgr_id},
+		REG_DT = NOW()
+		WHERE RGTR_ID = #{rgtr_id}
+		AND SCHDL_ID = #{schdl_id}
+	</update>
+	<delete id="removeSchedule" parameterType="com.I5E2.todo.domain.ScheduleVO">
+		DELETE FROM SCHDL
+		WHERE RGTR_ID =  #{rgtr_id}
+		AND SCHDL_ID = #{schdl_id}
+	</delete>
+</mapper>

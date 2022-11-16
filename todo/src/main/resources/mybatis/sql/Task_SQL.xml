@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.I5E2.todo.dao.TaskMapper">
+    
+    <select id="findByRegDt" parameterType="java.lang.String" resultType="com.I5E2.todo.domain.TaskVO">
+    	SELECT * 
+		FROM TASK
+		WHERE RGTR_ID = #{rgtr_id}
+		AND DATE_FORMAT(REG_DT, '%Y%m%d') = #{date}
+    </select>
+    
+    <insert id="insertTask" parameterType="com.I5E2.todo.domain.TaskVO">
+    	<selectKey keyProperty="task_id,indct_sn" resultType="hashmap" order="BEFORE">
+			SELECT (SELECT LPAD(MAX(CAST(TASK_ID AS UNSIGNED))+1, 8,'0') FROM TASK) AS task_id, 
+			(SELECT MAX(INDCT_SN)+1
+			FROM TASK
+			WHERE RGTR_ID = #{rgtr_id}
+			AND DATE_FORMAT(REG_DT, '%Y%m%d') = #{reg_dt}) AS indct_sn
+			FROM DUAL
+		</selectKey>
+    	INSERT INTO TASK 
+    	VALUES(#{task_id},#{cn},#{indct_sn},'N',#{up_task_id},#{rgtr_id},STR_TO_DATE(#{reg_dt}, '%Y-%m-%d'))
+    </insert>
+    
+    <delete id="removeTask" parameterType="com.I5E2.todo.domain.TaskVO">
+    	DELETE FROM TASK
+		WHERE RGTR_ID = #{rgtr_id}
+		AND TASK_ID = #{task_id}
+    </delete>
+    
+    <update id="updateTask" parameterType="com.I5E2.todo.domain.TaskVO">
+    	UPDATE TASK
+		SET
+		CN = #{cn},
+		INDCT_SN = ${indct_sn}
+		CMPTN_YN=#{cmptn_yn},
+		UP_TASK_ID = #{up_task_id},
+		REG_DT = STR_TO_DATE(#{reg_dt}, '%Y-%m-%d')
+		WHERE RGTR_ID = #{rgtr_id}
+		AND TASK_ID = #{task_id}
+    </update>
+</mapper>

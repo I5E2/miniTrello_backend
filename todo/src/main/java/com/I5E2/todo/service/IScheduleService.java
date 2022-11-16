@@ -8,6 +8,6 @@ public interface IScheduleService {
     public int createSchedule(ScheduleVO schedule);
     public int updateSchedule(ScheduleVO schedule);
     public int removeSchedule(ScheduleVO schedule);
-    public List<ScheduleVO> getSchedule(String date);
-    public List<ScheduleVO> getSchedule(String startDate,String endDate);
+    public List<ScheduleVO> getSchedule(String rgtr_id ,String date);
+    public List<ScheduleVO> getSchedule(String rgtr_id ,String startDate,String endDate);
 }
